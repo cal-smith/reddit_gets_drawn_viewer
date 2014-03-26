@@ -11,7 +11,8 @@
 <div class="drawn-contain">
 	<h1>Drawn</h1>
 	<div class="drawn">
-		<img class="org" src="http://{{comments}}.png">
-		<p>commenttext</p>
+		<img class="org" src="http://{{link}}.png">
+		<!--<p ng-repeat="comment in comments">{{marked(comment.data.body)}}</p>-->
+		<comments ng-repeat="comment in comments" comment="comment"></comments>
 	</div>
 </di>
