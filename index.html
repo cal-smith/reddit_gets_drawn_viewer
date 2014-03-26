@@ -8,10 +8,7 @@
 	<script src="app.js"></script>
 	<!--<base href="/">-->
 </head>
-<body>
-	<div class="back-image"></div>
-	<div ng-view>
-	</div>
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>-->
+<body ng-keydown="keyctrl($event)">
+	<div ng-view></div>
 </body>
 </html>
