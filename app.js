@@ -71,15 +71,15 @@ app.config(function($routeProvider, $locationProvider){
 	$routeProvider
 	.when('/', {
 		controller:'orig',
-		templateUrl:'rgd.html'
+		templateUrl:'/rgd.html'
 	})
 	.when('/next/:id',{
 		controller:'next',
-		templateUrl:'rgd.html'
+		templateUrl:'/rgd.html'
 	})
 	.when('/back/:id',{
 		controller:'back',
-		templateUrl:'rgd.html'
+		templateUrl:'/rgd.html'
 	})
 	.otherwise({
 		redirectTo:'/'
