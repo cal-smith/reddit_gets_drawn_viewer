@@ -53,16 +53,22 @@ app.service('load', function($http, $q){
 			for (var i = 1; i < data.length; i++) {
 				console.log(data);
 				comments = data[1].data.children;
-				result.push(comments);
-
+				if (data[1].data.children.length > 0){
+					result.push(comments);
+				} else{
+					var nilc = ['No Comments :('];
+					result.push(nilc);
+				}
 
 				if (data[i].data.children.length > 0){
 					var link = data[i].data.children[0].data.body_html;
-					console.log(link.contains('imgur.com'));
-					link = link.match(/imgur.com[^]*"/gi);
-					link = link[0].substr(0, link[0].length-1);
-					console.log(link[0].substr(0, link[0].length-1));
-					result.push(link);
+					console.log(link.contains('imgur.com') + "contains imgur.com");
+					if(link.contains('imgur.com')){
+						link = link.match(/imgur.com[^]*"/gi);
+						link = link[0].substr(0, link[0].length-1);
+						console.log(link[0].substr(0, link[0].length-1));
+						result.push(link);
+					}
 				}
 
 			}
@@ -118,6 +124,21 @@ app.controller('orig', function($scope, $http, load){
 	}, function(update) {
     	console.log('Got notification: ' + update);
 	});
+	$scope.keyctrl = function(ev, $locationProvider){
+		console.log(ev.keyCode);
+		switch(ev){
+			case 37:
+				$location.path('/');
+				console.log("left");
+				break;
+			case 39:
+				$location.path('/');
+				console.log("right");
+				break;
+			default:
+				break;
+		}
+	}
 });
 
 app.controller('next', function($scope, $location, load) {
@@ -155,8 +176,10 @@ app.controller('back', function($scope, $location, load){
 			$scope.image = images[position];
 			var promise = load.comments();
 			promise.then(function(data){
-				$scope.comments = data;
-				console.log($scope.comments + "comments");
+				$scope.link = data[1];
+				$scope.comments = data[0];
+				console.log(data);
+				console.log("^comments")
 			});
 		} else{
 			$location.path('/');
@@ -166,14 +189,22 @@ app.controller('back', function($scope, $location, load){
 
 app.directive('comments', function($compile){
 	var linker = function(scope, element, attrs){
-		console.log(scope.comment.data.body);
-		var md = marked(scope.comment.data.body);
-		console.log(md + ":marked down");
-		var template = '<p>'+md+'</p>';
-		//var body = marked(scope.comment.data.body);
-		//console.log(body);
-		element.html(template);
-		$compile(element.contents())(scope);
+		if (scope.comment.data){
+			console.log(scope.comment.data.body);
+			var md = marked(scope.comment.data.body);
+			console.log(md + ":marked down");
+			console.log("contains imgur.com? " + md.contains('imgur.com'));
+			var template;
+			if (md.contains('imgur.com')) {
+				link = md.match(/imgur.com[^]*"/gi);
+				link = link[0].substr(0, link[0].length-1);
+				template = '<div class="comment"><p><h4>{{comment.data.author}}</h4><img class="image" src="http://'+link+'.png">'+md+'</p></div>';
+			} else{
+				template = '<div class="comment"><p><h4>{{comment.data.author}}</h4>'+md+'</p></div>';
+			}
+			element.html(template);
+			$compile(element.contents())(scope);
+		}
 	}
 	return{
 		restrict: "E",
