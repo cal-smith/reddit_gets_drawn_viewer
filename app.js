@@ -47,16 +47,26 @@ app.service('load', function($http, $q){
 	this.comments = function(){
 		console.log("drawn");
 		var deferred = $q.defer();
+		var result = [];
 		$http.get('http://www.reddit.com/r/redditgetsdrawn/' + images[position].data.id + '/.json').
 		success(function(data){
 			for (var i = 1; i < data.length; i++) {
-				var link = data[i].data.children[0].data.body_html;
-				console.log(link.contains('imgur.com'));
-				link = link.match(/imgur.com[^]*"/gi);
-				link = link[0].substr(0, link[0].length-1);
-				console.log(link[0].substr(0, link[0].length-1));
+				console.log(data);
+				comments = data[1].data.children;
+				result.push(comments);
+
+
+				if (data[i].data.children.length > 0){
+					var link = data[i].data.children[0].data.body_html;
+					console.log(link.contains('imgur.com'));
+					link = link.match(/imgur.com[^]*"/gi);
+					link = link[0].substr(0, link[0].length-1);
+					console.log(link[0].substr(0, link[0].length-1));
+					result.push(link);
+				}
+
 			}
-			deferred.resolve(link);
+			deferred.resolve(result);
 		}).
 		error(function(data, status, headers, config){
 			console.log(status);
@@ -98,8 +108,10 @@ app.controller('orig', function($scope, $http, load){
 		console.log($scope.image + "reddit");
 		var promise = load.comments();
 		promise.then(function(data){
-			$scope.comments = data;
-			console.log($scope.comments + "comments");
+			$scope.link = data[1];
+			$scope.comments = data[0];
+			console.log(data);
+			console.log("^comments")
 		});
 	}, function(reason) {
     	console.log('Failed: ' + reason);
@@ -115,8 +127,10 @@ app.controller('next', function($scope, $location, load) {
 		$scope.image = images[position];
 		var promise = load.comments();
 		promise.then(function(data){
-			$scope.comments = data;
-			console.log($scope.comments + "comments");
+			$scope.link = data[1];
+			$scope.comments = data[0];
+			console.log(data);
+			console.log("^comments")
 		});
 	} else{
 		$location.path('/');
@@ -129,8 +143,10 @@ app.controller('back', function($scope, $location, load){
 		$scope.image = images[position];
 		var promise = load.comments();
 		promise.then(function(data){
-			$scope.comments = data;
-			console.log($scope.comments + "comments");
+			$scope.link = data[1];
+			$scope.comments = data[0];
+			console.log(data);
+			console.log("^comments")
 		});
 	} else{
 		if (loaded) {
@@ -148,7 +164,26 @@ app.controller('back', function($scope, $location, load){
 	}
 });
 
-
+app.directive('comments', function($compile){
+	var linker = function(scope, element, attrs){
+		console.log(scope.comment.data.body);
+		var md = marked(scope.comment.data.body);
+		console.log(md + ":marked down");
+		var template = '<p>'+md+'</p>';
+		//var body = marked(scope.comment.data.body);
+		//console.log(body);
+		element.html(template);
+		$compile(element.contents())(scope);
+	}
+	return{
+		restrict: "E",
+		replace: true,
+		link: linker,
+		scope:{
+			comment:'='
+		}
+	};
+});
 
 
 
