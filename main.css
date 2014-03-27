@@ -1,10 +1,11 @@
-html{
+*{
 	box-sizing: border-box;
 }
 
 body{
 	margin-left: 33px;
 	margin-right: 33px;
+	font-family: sans-serif;
 }
 
 .next-image{
@@ -85,5 +86,10 @@ body{
 }
 
 .org{
+	position: absolute;
+}
+
+.fixed{
+	top: 20px;
 	position: fixed;
 }
