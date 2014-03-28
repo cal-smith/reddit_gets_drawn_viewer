@@ -82,14 +82,25 @@ body{
 }
 
 .image{
-	max-width: 500px;
+	max-width: calc(100% - 20%);
+}
+
+.original{
+	display: flex;
+	flex-direction: column;
+}
+
+.orig-image-contain{
+	width: calc(100% - 20%);
 }
 
 .org{
-	position: absolute;
+	position: relative;
 }
 
 .fixed{
 	top: 20px;
 	position: fixed;
+	flex: 1 100%;
+	width: calc(100% / 2)
 }
