@@ -12,13 +12,19 @@ var position = 0;
 var images = [];
 var loaded = false;
 var lastid;
+var url = 'http://www.reddit.com/r/redditgetsdrawn/';
+//var url = 'http://www.reddit.com/r/photoshopbattles/';
+
+//attempt to load reddit post+comments when comeing from a /next/back url
+//autoload more posts when we get close to the end (just fire off a load.moreposts 
+//[pushes more posts to the bottom of the array] and continue rolling through the array)
 
 var app = angular.module('redditgetsdrawn', ['ngRoute']);
 
 app.service('load', function($http, $q){
 	this.reddit = function(){
 		var deferred = $q.defer();
-		$http.get('http://www.reddit.com/r/redditgetsdrawn/.json').
+		$http.get(url + '.json').
 		success(function(data){
 			loaded = true;
 			data = data.data.children;
@@ -48,7 +54,7 @@ app.service('load', function($http, $q){
 		console.log("drawn");
 		var deferred = $q.defer();
 		var result = [];
-		$http.get('http://www.reddit.com/r/redditgetsdrawn/' + images[position].data.id + '/.json').
+		$http.get(url + images[position].data.id + '/.json').
 		success(function(data){
 			for (var i = 1; i < data.length; i++) {
 				console.log(data);
@@ -215,6 +221,35 @@ app.directive('comments', function($compile){
 		}
 	};
 });
+
+function imagestaticer () {//omg wow such sticky scroll thingy
+	var elm = document.getElementById('orig');//get element
+	clientTop = 0;//lol
+	scrollTop = window.pageYOffset;//also lol
+	fixed = false;//cause its not position:fixed unless it is
+	if (scrollTop - clientTop > 147 && !fixed) {//Yoffset - 0 element position? apprently
+		elm.classList.add('fixed');//fix that shit
+		fixed = true;//lets just remeber what we did... just in case
+	} else if (scrollTop - clientTop < 147){//more lol
+			elm.classList.remove('fixed');//and lets un-fix that elm
+			fixed = false//and lets remeber that we un-fixed it
+	}
+}
+
+window.onscroll = imagestaticer;//the magic
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
