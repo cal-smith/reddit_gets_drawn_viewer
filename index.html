@@ -8,8 +8,8 @@
 	<script src="app.js"></script>
 	<!--<base href="/">-->
 </head>
-<body ng-keydown="keyctrl($event)">
-	<h4>&nbsp;&nbsp;&nbsp;&nbsp;RGDV - 0.6!</h4>
+<body ng-controller="body" ng-keyup="keyPress($event.keyCode)">
+	<h4>&nbsp;&nbsp;&nbsp;&nbsp;<a href="#/">RGDV - 0.6!</a></h4>
 	<div ng-view></div>
 </body>
 </html>
