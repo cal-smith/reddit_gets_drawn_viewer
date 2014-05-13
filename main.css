@@ -8,6 +8,10 @@ body{
 	font-family: sans-serif;
 }
 
+a{
+	color: rgb(94, 163, 224);
+}
+
 .next-image{
 	position: fixed;
 	right: 0;
